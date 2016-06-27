@@ -16,7 +16,7 @@ start_link(Value, LeaseTime) ->
     gen_server:start_link(?MODULE, [Value, LeaseTime], []).
 
 create(Value, LeaseTime) ->
-    sc_sup:start_child(Value, LeaseTime).
+    sc_element_sup:start_child(Value, LeaseTime).
 
 create(Value) ->
     create(Value, ?DEFAULT_LEASE_TIME).
@@ -65,6 +65,7 @@ handle_cast(delete, State) ->
     {stop, normal, State}.
 
 handle_info(timeout, State) ->
+    sc_event:timeout(State#state.value),
     {stop, normal, State}.
 
 terminate(_Reason, _State) ->
